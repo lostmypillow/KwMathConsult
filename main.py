@@ -98,8 +98,7 @@ def register_teacher(teacher_id: int, device_id: int):
                 conn.execute(text(clear_query), {'existing_id': existing_id.設備號碼})
                 conn.execute(text(update_query), {'teacher_id': teacher_id, 'device_id': device_id})
             else:
-                print('existing id equals device id, do nothing')
-                pass
+                conn.execute(text(clear_query), {'existing_id': existing_id.設備號碼})
         conn.commit()
         conn.close()
 
