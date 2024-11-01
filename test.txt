@@ -1,0 +1,13 @@
+# student before teacher arrives
+4600c81b6b
+# device: 2
+
+
+# teacher then student
+4600c86d17
+4600c81b6b
+# device: 2
+
+# same device change teacher
+# 4600c81f7f
+# 1
