@@ -3,6 +3,7 @@ version: '3.4'
 services:
   reservationapi:
     image: reservationapi
+    container_name: reservationapi
     build:
       context: .
       dockerfile: ./Dockerfile
