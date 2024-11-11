@@ -4,15 +4,11 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
-
+import os
 app = FastAPI()
 
-username = 'testsql'
-password = 'test123456'
-hostname = '192.168.2.8'
-database = 'JLL2'
-connection_string = f'mssql+pyodbc://{username}:{password}@{hostname}/{database}?driver=ODBC+Driver+17+for+SQL+Server'
-engine = create_engine(connection_string)
+engine = create_engine(
+    f'mssql+pyodbc://{os.environ.get("DB_USERNAME")}:{os.environ.get("DB_PASSWORD")}@{os.environ.get("DB_HOST")}/{os.environ.get("DB_NAME")}?driver=ODBC+Driver+17+for+SQL+Server')
 
 
 def clear_device_db():
@@ -40,10 +36,12 @@ def determine_identity(card_id: str) -> dict:
     student_query = "SELECT 姓名, 學號 FROM dbo.學生資料 WHERE 卡號 = :card_id or 學號 = :card_id"
     teacher_query = "SELECT 姓名, 學號 FROM dbo.使用者 WHERE 卡號 = :card_id or 學號 = :card_id"
     with engine.connect() as connection:
-        student = connection.execute(text(student_query),{'card_id': card_id}).fetchone()
+        student = connection.execute(
+            text(student_query), {'card_id': card_id}).fetchone()
         identity = 'student'
         if not student:
-            teacher = connection.execute(text(teacher_query),{'card_id': card_id}).fetchone()
+            teacher = connection.execute(
+                text(teacher_query), {'card_id': card_id}).fetchone()
             identity = 'teacher'
             if not teacher:
                 identity = "error"
@@ -89,16 +87,21 @@ def register_teacher(teacher_id: int, device_id: int):
     update_query = "UPDATE dbo.設備資料 SET 老師編號 = :teacher_id WHERE 設備號碼 = :device_id"
     clear_query = "UPDATE dbo.設備資料 SET 老師編號 = NULL WHERE 設備號碼 = :existing_id"
     with engine.connect() as conn:
-        existing_id = conn.execute(text(select_query), {'teacher_id': teacher_id}).fetchone()
+        existing_id = conn.execute(
+            text(select_query), {'teacher_id': teacher_id}).fetchone()
         if not existing_id:
-            conn.execute(text(update_query), {'teacher_id': teacher_id, 'device_id': device_id})
+            conn.execute(text(update_query), {
+                         'teacher_id': teacher_id, 'device_id': device_id})
             print('existing id does not exist, update')
         else:
             if existing_id.設備號碼 != int(device_id):
-                conn.execute(text(clear_query), {'existing_id': existing_id.設備號碼})
-                conn.execute(text(update_query), {'teacher_id': teacher_id, 'device_id': device_id})
+                conn.execute(text(clear_query), {
+                             'existing_id': existing_id.設備號碼})
+                conn.execute(text(update_query), {
+                             'teacher_id': teacher_id, 'device_id': device_id})
             else:
-                conn.execute(text(clear_query), {'existing_id': existing_id.設備號碼})
+                conn.execute(text(clear_query), {
+                             'existing_id': existing_id.設備號碼})
         conn.commit()
         conn.close()
 
@@ -122,12 +125,15 @@ def register_student(student_id, teacher_id):
     WHERE 自動編號 = :reservation_id
     """
     with engine.connect() as conn:
-        reservation_id = conn.execute(text(reservation_query), {'student_id': student_id, 'teacher_id': teacher_id}).fetchone()
+        reservation_id = conn.execute(text(reservation_query), {
+                                      'student_id': student_id, 'teacher_id': teacher_id}).fetchone()
         if not reservation_id:
-            conn.execute(text(insert_query), {'student_id': student_id, 'teacher_id': teacher_id})
+            conn.execute(text(insert_query), {
+                         'student_id': student_id, 'teacher_id': teacher_id})
             conn.commit()
         else:
-            conn.execute(text(update_query), {'reservation_id': reservation_id.自動編號})
+            conn.execute(text(update_query), {
+                         'reservation_id': reservation_id.自動編號})
             conn.commit()
 
 
@@ -145,10 +151,13 @@ def process_card(card_id: str, device_id: int):
             return {'message': '刷卡失敗: 輔導老師未刷卡'}
     else:
         return {'message': '刷卡失敗: 查無卡號'}
+
+
 @app.get('/clear')
 def clear_database():
     clear_device_db()
     return {'message': f"Clearing all records from dbo.設備資料 at {datetime.now()}"}
+
 
 @app.get('/healthcheck')
 def check_health():
