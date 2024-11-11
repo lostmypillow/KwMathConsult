@@ -9,7 +9,7 @@
 4. Fill out server details in .env file
 
 
-### Run Server
+### Run Dev Server
 ```bash
 fastapi dev main.py
 ```
@@ -21,11 +21,13 @@ fastapi dev main.py
 ```bash
 chmod +x setup.sh
 ```
-### Run
+
+### Run Production Docker
 Just run setup.sh
 ```bash
 ./setup.sh
 ```
+
 ## Why Docker?
 "setup.sh" (and in extension "Dockerfile") contains many frivolous commands that you would've had to type line by line by hand in order to fulfill all the prerequisites (including developement prequisites and FastAPI production prequisites), **it thus ensures the ability to reproduce the same application across multiple Linux systems**
 
