@@ -149,3 +149,7 @@ def process_card(card_id: str, device_id: int):
 def clear_database():
     clear_device_db()
     return {'message': f"Clearing all records from dbo.設備資料 at {datetime.now()}"}
+
+@app.get('/healthcheck')
+def check_health():
+    return {'message': 'server ok'}
