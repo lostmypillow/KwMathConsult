@@ -29,48 +29,25 @@ install_docker() {
     # Install Docker packages
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-    # Verify installation
-    sudo docker run hello-world
-}
-
-# Function to set up Docker group and user permissions
-setup_docker_group() {
-    echo "Setting up Docker group and adding user..."
-
-    # Create the docker group if it doesn't exist
+    # Set up Docker group and add the user
     sudo groupadd docker
-
-    # Add the current user to the docker group
     sudo usermod -aG docker $USER
 
     # Inform the user to log out or restart for the changes to take effect
-    echo "You need to log out and log back in for the group membership to be re-evaluated."
+    echo "Docker installed. You need to log out and log back in for the group membership to be re-evaluated."
     echo "Alternatively, you can run 'newgrp docker' to apply the changes immediately."
+
+    # Verify installation by running the hello-world container
+    sudo docker run hello-world
 }
 
 # Main logic
 if command -v docker &> /dev/null; then
-    # Docker is installed
-    echo "Docker is already installed."
-
-    # Check if Docker needs sudo to run
-    if sudo docker run hello-world &> /dev/null; then
-        echo "Docker requires sudo to run. Setting up Docker to run without sudo..."
-
-        # Set up Docker group
-        setup_docker_group
-
-        # Verify that Docker works without sudo
-        echo "Verifying Docker installation..."
-        docker run hello-world
-
-    else
-        # Docker doesn't need sudo, so just run the docker compose command
-        echo "Docker setup is complete, running docker-compose..."
-        docker compose up -d
-    fi
+    # Docker is already installed, so just run docker-compose
+    echo "Docker is already installed, running docker-compose..."
+    docker compose up -d
 else
-    # Docker is not installed, so proceed with installation
+    # Docker is not installed, proceed with installation
     echo "Docker is not installed. Installing Docker..."
 
     # Remove conflicting packages
@@ -79,11 +56,7 @@ else
     # Install Docker
     install_docker
 
-    # Set up Docker group
-    setup_docker_group
-
-    # Verify installation and run docker-compose
-    docker run hello-world
+    # Run docker-compose
     echo "Docker setup is complete, running docker-compose..."
     docker compose up -d
 fi
