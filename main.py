@@ -1,7 +1,3 @@
-from contextlib import asynccontextmanager
-from datetime import datetime
-from apscheduler.triggers.cron import CronTrigger
-from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
 import os
@@ -10,26 +6,6 @@ app = FastAPI()
 engine = create_engine(
     f'mssql+pyodbc://{os.environ.get("DB_USERNAME")}:{os.environ.get("DB_PASSWORD")}@{os.environ.get("DB_HOST")}/{os.environ.get("DB_NAME")}?driver=ODBC+Driver+17+for+SQL+Server')
 
-
-def clear_device_db():
-    with engine.connect() as connection:
-        connection.execute(text("UPDATE dbo.設備資料 SET 老師編號 = NULL"))
-        connection.commit()
-        connection.close()
-    print(f"Clearing all records from dbo.設備資料 at {datetime.now()}")
-
-
-scheduler = BackgroundScheduler()
-trigger = CronTrigger(hour=0, minute=0)
-# trigger = IntervalTrigger(minutes=2)
-scheduler.add_job(clear_device_db, trigger)
-scheduler.start()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    yield
-    scheduler.shutdown()
 
 
 def determine_identity(card_id: str) -> dict:
@@ -152,11 +128,6 @@ def process_card(card_id: str, device_id: int):
     else:
         return {'message': '刷卡失敗: 查無卡號'}
 
-
-@app.get('/clear')
-def clear_database():
-    clear_device_db()
-    return {'message': f"Clearing all records from dbo.設備資料 at {datetime.now()}"}
 
 
 @app.get('/healthcheck')
