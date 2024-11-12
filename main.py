@@ -1,32 +1,13 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
 import os
+from classes.cardholder import Cardholder
 app = FastAPI()
 
 engine = create_engine(
     f'mssql+pyodbc://{os.environ.get("DB_USERNAME")}:{os.environ.get("DB_PASSWORD")}@{os.environ.get("DB_HOST")}/{os.environ.get("DB_NAME")}?driver=ODBC+Driver+17+for+SQL+Server')
 
 
-
-def determine_identity(card_id: str) -> dict:
-    student_query = "SELECT 姓名, 學號 FROM dbo.學生資料 WHERE 卡號 = :card_id or 學號 = :card_id"
-    teacher_query = "SELECT 姓名, 學號 FROM dbo.使用者 WHERE 卡號 = :card_id or 學號 = :card_id"
-    with engine.connect() as connection:
-        student = connection.execute(
-            text(student_query), {'card_id': card_id}).fetchone()
-        identity = 'student'
-        if not student:
-            teacher = connection.execute(
-                text(teacher_query), {'card_id': card_id}).fetchone()
-            identity = 'teacher'
-            if not teacher:
-                identity = "error"
-    connection.close()
-    return {
-        'identity': identity,
-        'name': student.姓名 if student else teacher.姓名,
-        'id': student.學號 if student else teacher.學號
-    }
 
 
 def device_has_teacher(device_id: int) -> bool:
@@ -115,14 +96,14 @@ def register_student(student_id, teacher_id):
 
 @app.get('/{device_id}/{card_id}')
 def process_card(card_id: str, device_id: int):
-    card_holder = determine_identity(card_id)
-    if card_holder['identity'] == 'teacher':
-        register_teacher(card_holder['id'], device_id)
-        return {'message': f'{card_holder['name']}老師 刷卡成功'}
-    elif card_holder['identity'] == 'student':
+    cardholder = Cardholder(card_id)
+    if cardholder.is_teacher:
+        register_teacher(cardholder.id, device_id)
+        return {'message': f'{cardholder.name}老師 刷卡成功'}
+    elif cardholder.is_student:
         if device_has_teacher(device_id):
-            register_student(card_holder['id'], get_teacher_id(device_id))
-            return {'message': f'{card_holder['name']}同學 刷卡成功'}
+            register_student(cardholder.id, get_teacher_id(device_id))
+            return {'message': f'{cardholder.name}同學 刷卡成功'}
         else:
             return {'message': '刷卡失敗: 輔導老師未刷卡'}
     else:
