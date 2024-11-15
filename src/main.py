@@ -51,10 +51,10 @@ def process_card(card_id: str, device_id: int) -> str:
         device = Device(device_id)  # Initialize Device
         cardholder = Cardholder(card_id)  # Initialize Cardholder
         output = device.register(cardholder)  # Call register method
-        return {"message": output}  # Return the output from register
+        return output  # Return the output from register
     except Exception as e:
         print(str(e))
-        return {"message": "刷卡失敗"}  # Handle exceptions
+        return "刷卡失敗"  # Handle exceptions
 
 
 @app.get("/")

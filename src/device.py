@@ -49,7 +49,7 @@ class Device:
         - For teachers: If the teacher already has a device assigned, the previous device is cleared, and this device is assigned.
         """
         if cardholder.is_student and self.teacher_id == None:
-            return {'message': '刷卡失敗: 輔導老師未刷卡'}
+            return '刷卡失敗: 輔導老師未刷卡'
         elif cardholder.is_student and self.teacher_id is not None:
             reservation_id = Database.execute_SQL(
                 "register_select", {'student_id': cardholder.id, 'teacher_id': self.teacher_id})
