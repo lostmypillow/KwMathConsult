@@ -57,11 +57,11 @@ class Device:
             if not reservation_id or reservation_id == None:
                 Database.execute_SQL("register_insert", {
                                      'student_id': cardholder.id, 'teacher_id': self.teacher_id})
-                return {'message': f'{cardholder.name}學生 刷卡成功'}
+                return f'{cardholder.name}學生 刷卡成功'
             else:
                 Database.execute_SQL("register_update_student", {
                                      'reservation_id': reservation_id.自動編號})
-                return {'message': f'{cardholder.name}學生 刷卡成功'}
+                return f'{cardholder.name}學生 刷卡成功'
         elif cardholder.is_teacher:
             def params_lambda(teacher_id, device_id): return {
                 'teacher_id': teacher_id, 'device_id': device_id}
@@ -70,7 +70,7 @@ class Device:
                 # If the device matches, clear this device and stop further processing
                 Database.execute_SQL(
                     "register_update_teacher", params_lambda(None, self.id))
-                return {'message': f'{cardholder.name}老師 刷卡成功'}
+                return f'{cardholder.name}老師 刷卡成功'
 
             # If cardholder has a device assigned and it's not this device
             if cardholder.device_id is not None:
