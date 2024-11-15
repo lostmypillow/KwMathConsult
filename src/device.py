@@ -81,4 +81,4 @@ class Device:
             # Finally, assign this device to the cardholder
             Database.execute_SQL("register_update_teacher",
                                  params_lambda(cardholder.id, self.id))
-            return {'message': f'{cardholder.name}老師 刷卡成功'}
+            return f'{cardholder.name}老師 刷卡成功'
