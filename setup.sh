@@ -61,12 +61,12 @@ else
     docker compose up -d
 
     # Now check if Portainer is running
-    if docker ps --filter "name=portainer" --filter "status=running" -q; then
-        echo "Portainer is running"
-    else
-        echo "Portainer is NOT running. Starting Portainer"
-        docker-compose up -d portainer
-    fi
+    # if docker ps --filter "name=portainer" --filter "status=running" -q; then
+    #     echo "Portainer is running"
+    # else
+    #     echo "Portainer is NOT running. Starting Portainer"
+    #     docker-compose up -d portainer
+    # fi
     if docker ps --filter "name=reservationapi" --filter "status=running" -q; then
         echo "Reservation API is running. Use docker-compose up --force-recreate or docker-compose -build to forcibly recreate container"
     else

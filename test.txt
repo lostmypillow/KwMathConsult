@@ -11,3 +11,5 @@
 # same device change teacher
 # 4600c81f7f
 # 1
+pdoc main.py -o ./documentation
+PS C:\Users\JL\Documents\GitLab\reservation-api> pdoc classes -o ./documentation/classes
