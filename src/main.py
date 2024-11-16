@@ -2,45 +2,47 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from typing import List
 from .cardholder import Cardholder
 from .device import Device
+import base64
+import requests
+import json
 app = FastAPI()
 
-connected_clients: List[WebSocket] = []
+active_connections = set()
 
 
 @app.get('/{device_id}/{card_id}')
-def process_card(card_id: str, device_id: int) -> str:
+async def process_card(card_id: str, device_id: int) -> str:
     try:
         device = Device(device_id)  # Initialize Device
         cardholder = Cardholder(card_id)  # Initialize Cardholder
         output = device.register(cardholder)
-        for_websocket = output.replace("老師", "").replace("學生", "")
-        # for-websocket must have "device_num-teacher_name-teacher_school-teacher_img_url"
-        # Call register method
-        message = {
-            "number": 1,
-            "teacher_name": "王小名",
-            "teacher_school": "建國中學",
-            "teacher_img": "./test.jpg",
-        },
+        if cardholder.identity == 'teacher':
+            #    image_url = "https://via.placeholder.com/150"
+            #    response = requests.get(image_url)
+            #    response.raise_for_status()
+            #    base64_string = base64.b64encode(response.content).decode("utf-8")
+            #    message = {
+            #     "name": "example",  # Example name for the image
+            #     "image": base64_string
+            # }
+            for connection in active_connections:
+                await connection.send_text(json.dumps({
+                    "device_id": device.id,
+                    "teacher_name": cardholder.name,
+                    "teacher_school": "建國中學",
+                }))
         return output  # Return the output from register
     except Exception as e:
         print(str(e))
-        return "刷卡失敗"  # Handle exceptions
+        return "刷卡失敗"
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    connected_clients.append(websocket)
+    active_connections.add(websocket)
     try:
         while True:
-            # Keep connection open and await messages
-            data = await websocket.receive_text()
-            await websocket.send_text(f"Received: {data}")
+            await websocket.receive_text()
     except WebSocketDisconnect:
-        connected_clients.remove(websocket)
-
-
-@app.get("/")
-async def read_main():
-    return {"msg": "Hello World"}
+        active_connections.remove(websocket)
