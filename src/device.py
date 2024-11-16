@@ -82,3 +82,5 @@ class Device:
             Database.execute_SQL("register_update_teacher",
                                  params_lambda(cardholder.id, self.id))
             return f'{cardholder.name}老師 刷卡成功'
+        else:
+            return '刷卡失敗: 查無此號'

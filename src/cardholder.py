@@ -13,13 +13,14 @@ class Cardholder:
         self.card_id = card_id
         """Can be either 卡號 or 學號. Used in private function `_fetch_identity`. Not to be confused with `Cardholder.id`."""
         self.identity = None
-        """Can be either 'student' or 'teacher'. Will be 'None' if there's no information."""
+        """Can be either 'student' or 'teacher'."""
         self.id = None
-        """學號 of card holder. Will be 'None' if there's no information."""
+        """學號 of card holder."""
         self.name = None
-        """Name of card holder. Will be 'None' if there's no information."""
+        """Name of card holder."""
+        self.school = None
         self.device_id = None
-        """Number of the device that this teacher has already scanned. Will be 'None' if there's no information."""
+        """Number of the device that this teacher has already scanned."""
         self._fetch_identity()
         """Fetches identity upon instantiation."""
         self._fetch_associated_device()
@@ -51,6 +52,11 @@ class Cardholder:
                 self.identity = "teacher"
                 self.name = teacher.姓名
                 self.id = teacher.學號
+                self.school = teacher.大學
+            else:
+                self.identity = "other"
+                self.name = "Not Found"
+                self.id = "Not Found"
 
     def _fetch_associated_device(self) -> bool:
         """

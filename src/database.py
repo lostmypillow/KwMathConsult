@@ -22,7 +22,7 @@ class Database:
             WHERE 卡號 = :card_id OR 學號 = :card_id
         """,
         "fetch_identity_teacher": f"""
-            SELECT 姓名, 學號
+            SELECT 姓名, 學號, 大學
             FROM {os.environ.get('TEACHER_DB_NAME')}
             WHERE 卡號 = :card_id OR 學號 = :card_id""",
         "_fetch_associated_device": f"""

@@ -27,9 +27,9 @@ async def process_card(card_id: str, device_id: int) -> str:
             # }
             for connection in active_connections:
                 await connection.send_text(json.dumps({
-                    "device_id": device.id,
-                    "teacher_name": cardholder.name,
-                    "teacher_school": "建國中學",
+                    "id": device.id,
+                    "name": cardholder.name,
+                    "school": cardholder.school if not None else "",
                 }))
         return output  # Return the output from register
     except Exception as e:
