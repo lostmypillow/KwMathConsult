@@ -16,12 +16,13 @@ class Database:
     """
 
     SQL_commands = {
-        "fetch_identity_student": f"""
+        "fetch_role_student": f"""
             SELECT 姓名, 學號
             FROM {os.environ.get('STUDENT_DB_NAME')}
             WHERE 卡號 = :card_id OR 學號 = :card_id
         """,
-        "fetch_identity_teacher": f"""
+        # 大學 might change
+        "fetch_role_teacher": f"""
             SELECT 姓名, 學號, 大學
             FROM {os.environ.get('TEACHER_DB_NAME')}
             WHERE 卡號 = :card_id OR 學號 = :card_id""",
