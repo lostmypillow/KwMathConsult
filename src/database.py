@@ -65,18 +65,6 @@ class Database:
     def execute_SQL(query_key: str, params: dict = None):
         """
         Executes a SQL query based on the provided query key and parameters.
-
-        Args:
-            query_key (str): The key corresponding to the SQL query to be executed from the `Database.SQL_commands` dictionary.
-            params (dict, optional): A dictionary of parameters to pass to the query. Defaults to None.
-
-        Returns:
-            result (str or int or None): A string/int containing the result if the query returns rows; 
-                                    otherwise, None. For insert/update queries, the result is not returned.
-
-        This method is responsible for executing the SQL query using SQLAlchemy and handling database connections. 
-        It supports queries for selecting, inserting, and updating records. It commits changes to the database 
-        for insert and update queries, and returns a result for select queries.
         """
         query = Database.SQL_commands.get(query_key)
         with engine.connect() as conn:

@@ -1,23 +1,17 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from typing import List
+from fastapi import FastAPI, WebSocket
 from .cardholder import Cardholder
 from .device import Device
-import json
+from .websocket_manager import WebSocketManager
 app = FastAPI()
 
-active_connections = set()
+websocket_manager = WebSocketManager()
 
 
 @app.get('/{device_id}/{card_id}')
 async def process_card(card_id: str, device_id: int) -> str:
     try:
-        device = Device(device_id)
-        cardholder = Cardholder(card_id)
-        device.register(cardholder)
-        if cardholder.role == 'teacher':
-            for connection in active_connections:
-                await connection.send_text(device.websocket_commands)
-            
+        device = Device(device_id, websocket_manager) 
+        device.register(Cardholder(card_id))
         return device.message
     except Exception as e:
         print(str(e))
@@ -26,11 +20,12 @@ async def process_card(card_id: str, device_id: int) -> str:
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    active_connections.add(websocket)
-    print("Client established connection")
-    try:
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        active_connections.remove(websocket)
+    await websocket_manager.connect(websocket)
+    for n in range(1, 7):
+        device = Device(n)
+        if device.teacher_id is not None:
+            teacher = Cardholder(device.teacher_id)
+            websocket_manager.add_command(f'ADD {device.id} {teacher.id} {teacher.name} {teacher.school};')
+            websocket_manager.send()
+
+    await websocket_manager.receive_message(websocket)
