@@ -1,4 +1,4 @@
-from .database import Database
+from .database import execute_SQL
 
 
 class Cardholder:
@@ -18,21 +18,24 @@ class Cardholder:
         self.school = None
         self.device_id = None
         self.status = ""
-        print("im here")
         """Number of the device that this teacher has already scanned."""
         self._fetch_role(card_id)
         """Fetches role upon instantiation."""
 
     def _fetch_role(self, card_id):
-        student = Database.execute_SQL("fetch_role_student", {
-                                       'card_id': card_id})
+        student = execute_SQL(
+            "fetch_role_student",
+            card_id=card_id
+        )
         if student:
             self.role = "student"
             self.name = student.姓名.strip()
             self.id = student.學號.strip()
         else:
-            teacher = Database.execute_SQL(
-                "fetch_role_teacher", {'card_id': card_id})
+            teacher = execute_SQL(
+                "fetch_role_teacher",
+                card_id=card_id
+            )
             if teacher:
 
                 self.role = "teacher"
@@ -40,8 +43,10 @@ class Cardholder:
                 self.id = teacher.學號.strip()
                 self.school = teacher.大學.strip()
 
-                device_result = Database.execute_SQL(
-                    "_fetch_associated_device", {'teacher_id': teacher.學號})
+                device_result = execute_SQL(
+                    "fetch_associated_device",
+                    teacher_id=teacher.學號
+                    )
                 self.device_id = device_result.設備號碼 if device_result and device_result.設備號碼 is not None else None
             else:
                 self.role = "other"
