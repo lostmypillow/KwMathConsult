@@ -26,6 +26,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print("client connected")
     for n in range(1, 7):
         device = Device(n)
+        print(device.teacher_id)
         if device.teacher_id is not None:
             teacher = Cardholder(device.teacher_id)
             await websocket.send_json(
