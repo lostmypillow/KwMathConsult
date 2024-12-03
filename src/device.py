@@ -1,14 +1,11 @@
 from .database import Database
 from .cardholder import Cardholder
-from .websocket_manager import WebSocketManager
-
-
+from fastapi import WebSocket
 class Device:
-    def __init__(self, device_id, websocket: WebSocketManager):
+    def __init__(self, device_id):
         self.teacher_id = None
         self.id = device_id
         self.message = ""
-        self.websocket = websocket
         self._check_for_teacher()
 
     def _check_for_teacher(self):
@@ -16,7 +13,7 @@ class Device:
             "_check_for_teacher", {'device_id': self.id})
         self.teacher_id = result.老師編號 if result and result.老師編號 is not None else None
 
-    def register(self, cardholder: Cardholder):
+    async def register(self, cardholder: Cardholder, websocket: WebSocket):
         if cardholder.is_student and self.teacher_id == None:
             self.message = '刷卡失敗: 輔導老師未刷卡'
         elif cardholder.is_student and self.teacher_id is not None:
@@ -42,8 +39,12 @@ class Device:
                 # If the device matches, clear this device and stop further processing
                 Database.execute_SQL(
                     "register_update_teacher", params_lambda(None, self.id))
-                self.websocket.add_command(f'CLEAR {cardholder.device_id};')
-                self.websocket.send()
+                await websocket.send_json({
+                    "device": self.id,
+                    "image": "",
+                    "teacher": "",
+                    "school": ""
+                })
                 self.message = f'{cardholder.name}老師 刷卡成功'
                 return
 
@@ -53,14 +54,24 @@ class Device:
                 # Clear the cardholder's device (not the current one)
                 Database.execute_SQL("register_update_teacher", params_lambda(
                     None, cardholder.device_id))
-                self.websocket.add_command(f'CLEAR {cardholder.device_id};')
-                self.swap = cardholder.device_id
+                await websocket.send_json({
+                    "device": cardholder.device_id,
+                    "image": "",
+                    "teacher": "",
+                    "school": ""
+                })
+
 
             # Finally, assign this device to the cardholder
             Database.execute_SQL("register_update_teacher",
                                  params_lambda(cardholder.id, self.id))
-            self.websocket.add_command(f'ADD {self.id} {cardholder.id} {cardholder.name} {cardholder.school};')
-            self.websocket.send()
-            self.message += f'{cardholder.name}老師 刷卡成功'
+            await websocket.send_json(
+                {
+                    "device": self.id,
+                    "image": cardholder.id,
+                    "teacher": cardholder.name,
+                    "school": cardholder.school
+                })
+            self.message = f'{cardholder.name}老師 刷卡成功'
         else:
             self.message = '刷卡失敗: 查無此號'
