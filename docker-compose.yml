@@ -8,8 +8,8 @@ services:
     ports:
       - 8001:8001
     restart: always
-    env_file:
-      - .env.production
+    environment:
+      - DEBUG=False
 #   portainer:
 #     image: portainer/portainer-ce:2.21.4
 #     container_name: portainer

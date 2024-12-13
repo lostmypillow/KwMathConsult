@@ -27,7 +27,7 @@ WHILE @i <= 6 BEGIN IF NOT EXISTS (
 INSERT INTO
     設備資料 ([設備號碼], [老師編號])
 VALUES
-    (@i, 'T001');
+    (@i, NULL);
 
 -- Use @i to insert the ascending number
 END

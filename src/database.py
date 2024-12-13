@@ -3,14 +3,9 @@ import os
 
 # I'm using ODBC Driver 17, and I *could* use 18 and that would mean appending '&TrustServerCertificate=yes' at the end and testing extensively to ensure no broken functionality.
 # So maybe after everything is stable and open a PR or something
-
-engine = create_engine(
-    f"mssql+pyodbc://{os.environ.get('DB_USERNAME')}:"
-    f"{os.environ.get('DB_PASSWORD')}@"
-    f"{os.environ.get('DB_HOST')}/"
-    f"{os.environ.get('DB_NAME')}?driver=ODBC+Driver+17+for+SQL+Server"
-)
-"""Engine creation using SQLAlchemy"""
+connection_url = "mssql+pyodbc://testsql:test123456@192.168.2.8/JLL2?driver=ODBC+Driver+17+for+SQL+Server" if os.getenv(
+    'DEBUG') == 'True'else "mssql+pyodbc://mssql:mssql@192.168.2.12/JLL2?driver=ODBC+Driver+17+for+SQL+Server"
+engine = create_engine(connection_url)
 
 
 def execute_SQL(command_name: str, mode: str = 'one', **kwargs):

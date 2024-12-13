@@ -10,5 +10,5 @@ services:
     ports:
       - 8001:8001
       - 5678:5678
-    env_file:
-      - .env.development
+    environment:
+      - DEBUG=True

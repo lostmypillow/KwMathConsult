@@ -17,6 +17,7 @@ class Device:
             "check_for_teacher",
             device_id=self.id
         )
+        print(f"Device has {result} {result.老師編號}")
         if result and result.老師編號 is not None:
             self.teacher_id = result.老師編號
     def _check_db_exists(self):

@@ -18,7 +18,9 @@ active_websocket: Optional[WebSocket] = None
 async def process_card(card_id: str, device_id: int) -> str:
     try:
         device = Device(device_id)
-        await device.register(Cardholder(card_id), active_websocket)
+        cardholder = Cardholder(card_id)
+        print(cardholder.is_student)
+        await device.register(cardholder, active_websocket)
         return device.message
     except Exception as e:
         print(str(e))
