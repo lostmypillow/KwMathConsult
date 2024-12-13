@@ -9,7 +9,7 @@ class Device:
         self.id = device_id
         self.message = ""
         self._check_for_teacher()
-        self._check_db_exists
+        self._check_db_exists()
 
     def _check_for_teacher(self):
         result = execute_SQL(
