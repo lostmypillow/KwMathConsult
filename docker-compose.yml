@@ -1,7 +1,7 @@
 services:
-  reservationapi:
-    image: reservationapi
-    container_name: reservationapi
+  kwconsultapi:
+    image: kwconsultapi
+    container_name: kwconsultapi
     build:
       context: .
       dockerfile: ./Dockerfile

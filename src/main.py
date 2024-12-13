@@ -3,7 +3,14 @@ from .cardholder import Cardholder
 from .device import Device
 from typing import Optional
 
-app = FastAPI()
+app = FastAPI(
+    title="數學輔導登記系統",
+    version="0.1.0",
+    contact={
+        "name": "Johnny",
+        "email": "jmlin0101@gmail.com"
+    }
+)
 
 active_websocket: Optional[WebSocket] = None
 
