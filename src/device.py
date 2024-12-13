@@ -9,6 +9,7 @@ class Device:
         self.id = device_id
         self.message = ""
         self._check_for_teacher()
+        self._check_db_exists
 
     def _check_for_teacher(self):
         result = execute_SQL(
@@ -17,6 +18,8 @@ class Device:
         )
         if result and result.老師編號 is not None:
             self.teacher_id = result.老師編號
+    def _check_db_exists(self):
+        execute_SQL("check_device_db")
 
     async def register(self, cardholder: Cardholder, websocket: WebSocket):
         if cardholder.is_student and self.teacher_id == None:

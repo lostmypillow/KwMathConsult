@@ -9,7 +9,7 @@ services:
       - 8001:8001
     restart: always
     env_file:
-      - .env
+      - .env.production
 #   portainer:
 #     image: portainer/portainer-ce:2.21.4
 #     container_name: portainer

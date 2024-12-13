@@ -23,7 +23,7 @@ def execute_SQL(command_name: str, mode: str = 'one', **kwargs):
         result = conn.execute(text(sql_statement), kwargs)
         if command_name in [
             "register_insert",
-            "register_update_student", "register_update_teacher"
+            "register_update_student", "register_update_teacher", "check_device_db"
         ]:
             conn.commit()
         else:
