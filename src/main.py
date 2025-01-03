@@ -2,6 +2,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from .cardholder import Cardholder
 from .device import Device
 from typing import Optional
+from .device_service import DeviceService
+from .cardholder_service import CardholderService
 
 app = FastAPI(
     title="數學輔導登記系統",
@@ -54,3 +56,16 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         active_websocket = None
         print("Client disconnected")
+
+@app.get('/v2/{device_id}/{card_id}')
+async def process_card_v2(card_id: str, device_id: int) -> str:
+    try:
+        device = DeviceService(device_id=device_id)
+        cardholder = CardholderService(card_id)
+        device.handle_registration(cardholder=cardholder)
+        # print(cardholder.is_student)
+        # await device.register(cardholder, active_websocket)
+        return device.message
+    except Exception as e:
+        print(str(e))
+        return "刷卡失敗"
