@@ -28,18 +28,18 @@ pip install -r "$APP_DIR/requirements.txt" >/dev/null
 echo "ok"
 
 echo "SETUP [Install Microsoft ODBC Driver 18]"
-curl https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg >/dev/null
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/microsoft-prod.gpg >/dev/null
 if [ "$DISTRO" == "Ubuntu" ]; then
     curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list >/dev/null
 
 # Check if the system is Debian
-elif [ "$DISTRO" == "Debian" ];
-    curl https://packages.microsoft.com/config/debian/12/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+elif [ "$DISTRO" == "Debian" ]; then
+    curl https://packages.microsoft.com/config/debian/12/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list >/dev/null
 else
     echo "Unsupported distribution. Only Ubuntu and Debian are supported."
     exit 1
 fi
-sudo apt-get update -y
+sudo apt-get update -y  >/dev/null
 sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 >/dev/null
 sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 >/dev/null
 echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
@@ -58,7 +58,7 @@ After=network.target
 [Service]
 User=$USER
 WorkingDirectory=$APP_DIR
-ExecStart=$VENV_DIR/bin/gunicorn --bind 0.0.0.0:8001 -k uvicorn.workers.UvicornWorker src.main:app"
+ExecStart=$APP_DIR/.venv/bin/gunicorn --bind 0.0.0.0:8001 -k uvicorn.workers.UvicornWorker src.main:app
 Restart=always
 Environment=PYTHONUNBUFFERED=1
 
