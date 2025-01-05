@@ -71,5 +71,14 @@ sudo systemctl daemon-reload
 sudo systemctl enable $SERVICE_NAME
 sudo systemctl start $SERVICE_NAME
 
-# Print status of the service
-sudo systemctl status $SERVICE_NAME
+STATUS=$(sudo systemctl status $SERVICE_NAME --no-pager --quiet)
+echo "$STATUS"
+
+# Graceful exit if the service is running correctly
+if [[ "$STATUS" == *"active (running)"* ]]; then
+    echo "$SERVICE_NAME is running successfully."
+    exit 0
+else
+    echo "$SERVICE_NAME failed to start."
+    exit 1
+fi
