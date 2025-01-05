@@ -69,3 +69,6 @@ async def process_card_v2(card_id: str, device_id: int) -> str:
     except Exception as e:
         print(str(e))
         return "刷卡失敗"
+@app.get('/healthcheck')
+def health_check():
+    return "I'm up!"
