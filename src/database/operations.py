@@ -33,7 +33,11 @@ def sql_from_file(command_name: str) -> str:
         return file_buffer.read()
 
 
-# This entire operations.py file is actually adapted from the same operations.py in  http://192.168.2.7:3000/lostmypillow/KwExamID/src/branch/main/database. Except the separate commit_sql, fetch_one_sql...functions became one single execute_SQL function here simply because execute_SQL was written this way in this project since the beginning. It is therefore safe to adapt the same functions from KwExamID if you wish to. For now, if it ain't broke I ain't fixing it.
+# This entire operations.py file is actually adapted from the same operations.py in  http://192.168.2.7:3000/lostmypillow/KwExamID/src/branch/main/database. 
+
+# Except the separate commit_sql, fetch_one_sql...functions became one single execute_SQL function here simply because execute_SQL was written this way in this project since the beginning. 
+
+# It is therefore safe to adapt the same functions from KwExamID if you wish to. For now, if it ain't broke I ain't fixing it.
 def execute_SQL(command_name: str, **kwargs):
     """executes SQL from a given command name
 

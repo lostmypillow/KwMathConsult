@@ -52,7 +52,7 @@ SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
 
 sudo bash -c "cat > $SERVICE_FILE" <<EOL
 [Unit]
-Description=KwConsult API
+Description=KwMathConsult
 After=network.target
 
 [Service]
