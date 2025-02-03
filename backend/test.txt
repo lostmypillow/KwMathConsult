@@ -1,0 +1,20 @@
+# student before teacher arrives
+4600c81b6b
+# device: 2
+
+
+# teacher then student
+4600c86d17
+4600c81b6b
+# device: 2
+
+# same device change teacher
+# 4600c81f7f
+# 1
+pdoc main.py -o ./documentation
+PS C:\Users\JL\Documents\GitLab\reservation-api> pdoc classes -o ./documentation/classes
+
+teacher: 200067 NTU 4600c868a7
+
+200034
+
