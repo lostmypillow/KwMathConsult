@@ -2,8 +2,8 @@
 
 # Exit on error
 set -e
-APP_DIR="$(pwd)/backend"
-SERVICE_NAME="kwtouchscreen"
+APP_DIR="$(pwd)"
+SERVICE_NAME="kwmathconsult"
 PORT="8001"
 
 
