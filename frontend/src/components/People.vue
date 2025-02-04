@@ -11,7 +11,7 @@ const data = ref(
 );
 
 const connectWebSocket = () => {
-  const socket = new WebSocket("ws://192.168.2.6:8001/ws");
+  const socket = new WebSocket(`ws://${window.location.host}/ws`);
 
   socket.onmessage = (event) => {
     const receivedData = JSON.parse(event.data);

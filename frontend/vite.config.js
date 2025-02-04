@@ -9,5 +9,16 @@ export default defineConfig({
     emptyOutDir: true, // Delete existing files before building
   },
   base: '/dash',
+  server: {
+    proxy: {
+      "/ws": {
+        target: "http://127.0.0.1:8000",
+        ws: true, // Enable WebSocket proxying
+        changeOrigin: true,
+        secure: false
+      },
+      
+    },
+  },
   
 })
