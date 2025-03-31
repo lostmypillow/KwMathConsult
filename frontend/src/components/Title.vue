@@ -28,7 +28,7 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
 </script>
 
 <template>
-  <div class="flex items-center justify-between h-1/8 w-full px-2">
+  <div class="flex items-center justify-between h-1/8 w-full px-2 font-mono">
     <div class="flex flex-row gap-4 items-center justify-center">
       <img src="/logo.webp" alt="logo" />
       <p class="text-2xl">高偉數學輔導系统</p>
@@ -36,7 +36,7 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
 
     <p>
       {{ formattedDate }} 
-      <span class="font-mono">{{ formattedTime }}</span>
+      <span >{{ formattedTime }}</span>
     </p>
   </div>
 </template>
