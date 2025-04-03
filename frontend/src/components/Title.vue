@@ -36,7 +36,7 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
 
     <p>
       {{ formattedDate }} 
-      <span >{{ formattedTime }}</span>
+      <span>{{ formattedTime }}</span>
     </p>
   </div>
 </template>

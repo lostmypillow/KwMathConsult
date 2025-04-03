@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref,  onMounted, onUnmounted } from "vue";
 
 const data = ref(
   Array.from({ length: 6 }, (_, i) => ({
@@ -29,10 +29,7 @@ const connectWebSocket = () => {
   });
 };
 
-onMounted(() => {
-  connectWebSocket();
-  // interval.value = setInterval(updateTime, 1000);
-});
+onMounted(() => connectWebSocket())
 </script>
 
 <template>
@@ -46,7 +43,7 @@ onMounted(() => {
       <img
         :src="
           datum.image
-            ? 'http://192.168.2.7/kwweb/classpeople/other/stuphoto.asp?check=emp&id=' +
+            ? 'http://192.168.2.17/picture/employee/' +
               datum.image
             : '/placeholder.png'
         "
