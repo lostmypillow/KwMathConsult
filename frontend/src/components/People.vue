@@ -43,7 +43,7 @@ onMounted(() => connectWebSocket())
       <img
         :src="
           datum.image
-            ? 'http://192.168.2.17/picture/employee/' +
+            ? 'http://192.168.2.17:8002/picture/employee/' +
               datum.image
             : '/dash/placeholder.png'
         "
