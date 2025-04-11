@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `run.sh` to `deploy.sh`, to make it clear it's a script for deployment
 - Synced all application and website names
+- Added '/dash' to placeholder logic
 
 ## Removed
 - `public` folder from backend
+- Unnecessary Vite video URL

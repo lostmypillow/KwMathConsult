@@ -45,7 +45,7 @@ onMounted(() => connectWebSocket())
           datum.image
             ? 'http://192.168.2.17/picture/employee/' +
               datum.image
-            : '/placeholder.png'
+            : '/dash/placeholder.png'
         "
         alt=""
         class="h-[16vh] object-contain self-center"

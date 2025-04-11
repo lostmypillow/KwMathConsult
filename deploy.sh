@@ -12,14 +12,24 @@ echo ""
 echo "KwMathConsult API DEPLOY SCRIPT FOR v$VERSION STARTING..."
 echo ""
 
-ENV_FILE="$APP_DIR/.env"
-ENV_EXAMPLE="$APP_DIR/.env.example"
+BACKEND_ENV_FILE="$APP_DIR/.env"
+BACKEND_ENV_EXAMPLE="$APP_DIR/.env.example"
 
-if [ ! -f "$ENV_FILE" ]; then
-    echo "SETUP [Create .env file...]"
-    cp "$ENV_EXAMPLE" "$ENV_FILE"
-    nano "$ENV_FILE"
-    echo "Done! .env created at $ENV_FILE"
+if [ ! -f "$BACKEND_ENV_FILE" ]; then
+    echo "SETUP [Creating backend .env file...]"
+    cp "$BACKEND_ENV_EXAMPLE" "$BACKEND_ENV_FILE"
+    nano "$BACKEND_ENV_FILE"
+    echo "Done! Backend .env created at $BACKEND_ENV_FILE"
+    echo ""
+fi
+FRONTEND_ENV_FILE="$(pwd)/frontend/.env"
+FRONTEND_ENV_EXAMPLE="$(pwd)/frontend/.env.example"
+
+if [ ! -f "$FRONTEND_ENV_FILE" ]; then
+    echo "SETUP [Creating frontend .env file...]"
+    cp "$FRONTEND_ENV_EXAMPLE" "$FRONTEND_ENV_FILE"
+    nano "$FRONTEND_ENV_FILE"
+    echo "Done! Frontend .env created at $FRONTEND_ENV_FILE"
     echo ""
 fi
 
