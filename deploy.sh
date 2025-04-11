@@ -18,32 +18,15 @@ ENV_EXAMPLE="$APP_DIR/.env.example"
 if [ ! -f "$ENV_FILE" ]; then
     echo "SETUP [Create .env file...]"
     cp "$ENV_EXAMPLE" "$ENV_FILE"
-
-    # Create a temporary file to store user inputs
-    TEMP_ENV=$(mktemp)
-    
-    while IFS= read -r line || [ -n "$line" ]; do
-        # Ignore empty lines or comments
-        if [[ -z "$line" || "$line" == \#* ]]; then
-            echo "$line" >> "$TEMP_ENV"
-            continue
-        fi
-
-        VAR_NAME=$(echo "$line" | cut -d= -f1)
-        read -rp "Enter value for $VAR_NAME: " VAR_VAL
-        echo "$VAR_NAME=$VAR_VAL" >> "$TEMP_ENV"
-    done < "$ENV_EXAMPLE"
-
-    mv "$TEMP_ENV" "$ENV_FILE"
+    nano "$ENV_FILE"
     echo "Done! .env created at $ENV_FILE"
+    echo ""
 fi
-echo ""
-
-
 
 echo "SETUP [Updating system...]"
 sudo apt-get update -y >/dev/null
 echo "ok"
+echo ""
 
 echo "SETUP [Ensuring necessary packages are installed...]"
 sudo apt-get install -y python3-venv python3-pip wget curl gnupg nginx >/dev/null
@@ -56,6 +39,24 @@ sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 >/dev/null
 echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
 source ~/.bashrc
 sudo apt-get install -y unixodbc-dev >/dev/null
+echo "Done."
+echo ""
+
+echo "FRONTEND [(Re)building frontend...]"
+FRONTEND_DIR="$(pwd)/frontend"
+PUBLIC_DIR="$(pwd)/backend/public"
+
+if [ -d "$PUBLIC_DIR" ]; then
+    rm -rf "$PUBLIC_DIR"
+fi
+
+mkdir -p "$PUBLIC_DIR"
+cd "$FRONTEND_DIR"
+
+npm install >/dev/null 2>&1
+npm run build >/dev/null 2>&1
+
+cd ..
 echo "Done."
 echo ""
 
@@ -92,6 +93,7 @@ Environment=PYTHONUNBUFFERED=1
 WantedBy=multi-user.target
 EOL
 echo "ok"
+echo ""
 
 echo "RUN [Starting FastAPI systemd service...]"
 sudo systemctl daemon-reload
@@ -107,7 +109,6 @@ else
     exit 1
 fi
 
-
-echo "[DONE] Access KwMathConsult API at http://$(hostname -I | awk '{print $1}'):$PORT"
+echo "DONE! [Access KwMathConsult API at http://$(hostname -I | awk '{print $1}'):$PORT]"
 
 exit 0
