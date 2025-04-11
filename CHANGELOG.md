@@ -38,3 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Unnecessary Docker files in `/backend` folder
 - Unnecessary `/backend/.vscode` folder
+
+## [0.2.2] - 2025-04-11
+
+### Added
+- Logic in `deploy.sh` (formerly known as `run.sh`) to check for existence of `.env` in backend folder before deployment
+- Response class for our only endpoint to make it clear (as clear as it can be without breaking API compatibility with RPi clients) what responses the endpoint will return
+
+### Changed
+- `run.sh` to `deploy.sh`, to make it clear it's a script for deployment
+- Synced all application and website names
