@@ -1,59 +1,30 @@
 <script setup>
-import { ref,  onMounted, onUnmounted } from "vue";
-
-const data = ref(
-  Array.from({ length: 6 }, (_, i) => ({
-    device: i + 1,
-    teacher: "",
-    school: "",
-    image: "",
-  }))
-);
-
-const connectWebSocket = () => {
-  const socket = new WebSocket(`ws://localhost:8000/ws`);
-
-  socket.onmessage = (event) => {
-    const receivedData = JSON.parse(event.data);
-    console.log(receivedData);
-    data.value = data.value.map((item) =>
-      item.device === receivedData["device"] ? { ...receivedData } : item
-    );
-    console.log(data.value);
-  };
-
-  onUnmounted(() => {
-    if (socket.readyState === WebSocket.OPEN) {
-      socket.close();
-    }
-  });
-};
-
-onMounted(() => connectWebSocket())
+import { useWebSocket } from "../composables/useWebSocket";
+const ws = useWebSocket()
 </script>
 
 <template>
   <div class="flex flex-row grow gap-4 w-full items-center justify-between max-h-4/8">
     <div
-      v-for="(datum, index) in data"
-      :key="index"
-      :id="index"
-      class="drop-shadow-2xl h-fit backdrop-blur-3xl rounded-xl py-4 px-2 w-36 h-48 grid justify-center content-start border-2"
+      v-for="teacher in ws.receivedMessage.value"
+      :key="teacher.card_id"
+      :id="teacher.card_id"
+      class="drop-shadow-2xl  backdrop-blur-3xl rounded-xl py-4 px-2 w-36 h-fit min-h-56 grid justify-center content-start border-2 border-blue-200"
     >
       <img
         :src="
-          datum.image
+          teacher.card_id
             ? 'http://192.168.2.17:8002/picture/employee/' +
-              datum.image
-            : '/dash/placeholder.png'
+            teacher.card_id
+            : '/dash/placeholders.png'
         "
         alt=""
         class="h-[16vh] object-contain self-center"
       />
       <label class="justify-self-center self-center pt-4">{{
-        datum.teacher
+        teacher.name ? teacher.name : ""
       }}</label>
-      <label class="justify-self-center self-center">{{ datum.school }}</label>
+      <label class="justify-self-center self-center">{{ teacher.school ? teacher.school : "" }}</label>
     </div>
   </div>
 </template>
