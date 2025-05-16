@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
+import { RouterView } from "vue-router";
 const time = ref(new Date());
 const updateTime = () => {
   time.value = new Date();
@@ -39,4 +40,5 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
       <span>{{ formattedTime }}</span>
     </p>
   </div>
+  <RouterView></RouterView>
 </template>
