@@ -12,8 +12,8 @@ echo ""
 echo "KwMathConsult API DEPLOY SCRIPT FOR v$VERSION STARTING..."
 echo ""
 
-BACKEND_ENV_FILE="$APP_DIR/.env"
-BACKEND_ENV_EXAMPLE="$APP_DIR/.env.example"
+BACKEND_ENV_FILE="$APP_DIR/src/config.py"
+BACKEND_ENV_EXAMPLE="$APP_DIR/src/config.py.example"
 
 if [ ! -f "$BACKEND_ENV_FILE" ]; then
     echo "SETUP [Creating backend .env file...]"
