@@ -1,6 +1,6 @@
 export async function resolveCardholderImage(id: string): Promise<string> {
   const fallback = '/dash/placeholder.png'
-  const primary = `http://localhost:8000/picture/${id}`
+  const primary = `http://${window.location.host}/picture/${id}`
   const secondary = `http://192.168.2.17:8002/picture/employee/${id}`
 
   return await tryImage(primary)

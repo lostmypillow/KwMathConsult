@@ -20,7 +20,7 @@ const getBrowserInfo = () => ({
   }
 })
 // window.location.host
-const url = 'ws://' + 'localhost:8000' +`/ws/${uuidv7()}`
+const url = 'ws://' + `${window.location.host}` +`/ws/${uuidv7()}`
 const getTimestamp = () => new Date().toISOString()
 
 const log = (level: 'log' | 'error' | 'warn', msg: string, data?: any) => {

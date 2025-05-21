@@ -53,7 +53,7 @@ const uploadCroppedImage = async (canvas) => {
   const formData = new FormData();
   formData.append("file", blob, "cropped.jpg");
 
-  await fetch(`http://localhost:8000/picture/${inputNum.value}`, {
+  await fetch(`http://${window.location.host}/picture/${inputNum.value}`, {
     method: "POST",
     body: formData,
   });
@@ -74,7 +74,7 @@ const updateCollege = async () => {
   try {
     const x = teacherData.value;
 
-    await axios.post(`http://localhost:8000/update`, x);
+    await axios.post(`http://${window.location.host}/update`, x);
     updateBtnStatus.value = "success";
     updateBtnText.value = "更新成功!";
     setTimeout(() => {
@@ -103,7 +103,7 @@ onMounted(() => {
       }
       imageSrc.value = await resolveCardholderImage(cardId);
       teacherData.value = await (
-        await fetch(`http://localhost:8000/0/${inputNum.value}`, {
+        await fetch(`http://${window.location.host}/0/${inputNum.value}`, {
           method: "GET",
         })
       ).json();
