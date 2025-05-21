@@ -125,7 +125,7 @@ onMounted(() => {
           alt=""
           class="h-[32vh] object-contain self-center"
         />
-        <img v-else src="/dash/placeholder.png" alt="" />
+        <img v-else :src="`${window.location.host}/dash/placeholder.png`" alt="" />
       </transition>
 
       <InputGroup class="px-7">

@@ -45,7 +45,7 @@ onMounted(() => {
           class="h-[16vh] object-contain self-center"
         />
 
-        <img v-else src="/dash/placeholder.png" alt="" />
+        <img v-else :src="`${window.location.host}/dash/placeholder.png`" alt="" />
       </transition>
 
       <label class="justify-self-center self-center pt-4">{{
