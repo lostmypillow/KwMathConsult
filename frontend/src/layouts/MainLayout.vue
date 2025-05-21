@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { RouterView, useRoute } from "vue-router";
+import { RouterView, useRoute, useRouter } from "vue-router";
 const route = useRoute()
+const router = useRouter()
 const time = ref(new Date());
 const updateTime = () => {
   time.value = new Date();
@@ -32,7 +33,7 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
 <template>
   <div class="flex items-center justify-between h-1/8 w-full px-2 ">
     <div class="flex flex-row gap-4 items-center justify-center">
-      <img src="/logo.webp" alt="logo" />
+      <img src="/logo.webp" alt="logo" @click="router.push('/edit')" />
       <p class="text-2xl">高偉數學輔導系统 {{ route.fullPath == '/edit' ?  '編輯資訊' : '' }}</p>
     </div>
 
