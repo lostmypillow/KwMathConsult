@@ -8,14 +8,7 @@ onMounted(() => {
   watch(
     () => ws.receivedMessage.value,
     async (teachers) => {
-      // for (const teacher of teachers) {
-      //   console.log(teacher)
-      // }
-      // if (!teachers) {
-      //   console.log("returned early");
-      //   return;
-      // }
-      console.log(teachers)
+      
 
       for (const teacher of teachers) {
         if (!teacher.card_id) {
@@ -35,7 +28,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="flex flex-row grow gap-4 w-full items-center justify-between max-h-4/8"
+    class="flex flex-row grow gap-4 w-full items-center justify-between max-h-4/8 "
   >
     <div
       v-for="teacher in ws.receivedMessage.value"
