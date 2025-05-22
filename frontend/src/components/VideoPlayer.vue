@@ -6,7 +6,9 @@ import axios from "axios";
 const RETRY_DELAY = 2000; // 2 seconds delay
 
 const fileName = ref("");
-const videoURL = computed(() => "http://" + import.meta.env.VITE_VIDEO_URL + "/video/" + fileName.value);
+const videoURL = computed(
+  () => "http://" + import.meta.env.VITE_VIDEO_URL + "/video/" + fileName.value
+);
 const videoPlayerRef = ref(null);
 
 let stopped = false;
@@ -46,7 +48,9 @@ const retryAction = async (action) => {
 
 // Function to get the next video
 const attemptGetNext = async (signal) => {
-  console.log("[VideoPlayer.vue] [" + new Date().toISOString() + "] Executing getNext()");
+  console.log(
+    "[VideoPlayer.vue] [" + new Date().toISOString() + "] Executing getNext()"
+  );
 
   const response = await axios.get(
     "http://" + import.meta.env.VITE_VIDEO_URL + "/next",
@@ -57,10 +61,15 @@ const attemptGetNext = async (signal) => {
     throw new Error("Failed to get next video or data is null");
   }
 
-  console.log("[VideoPlayer.vue] [" + new Date().toISOString() + "] Video file name received: ", response.data);
+  console.log(
+    "[VideoPlayer.vue] [" +
+      new Date().toISOString() +
+      "] Video file name received: ",
+    response.data
+  );
 
   if (videoPlayerRef.value) {
-    videoPlayerRef.value.src = '';
+    videoPlayerRef.value.src = "";
     fileName.value = response.data;
     videoPlayerRef.value.src = videoURL.value;
     videoPlayerRef.value.load();
@@ -118,10 +127,15 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div className="grow-0 flex flex-row items-center justify-between w-full max-h-[52vh]">
-    <video ref="videoPlayerRef"  autoplay className="h-full object-contain rounded-xl drop-shadow-2xl"  @ended="retryAction(attemptGetNext)">
+
+    <video
+      ref="videoPlayerRef"
+      autoplay
+      className=" aspect-video h-full object-contain rounded-xl drop-shadow-2xl"
+      @ended="retryAction(attemptGetNext)"
+    >
       <source :src="videoURL" type="video/mp4" />
     </video>
-<div></div>
-  </div>
+
+
 </template>

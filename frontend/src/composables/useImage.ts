@@ -1,6 +1,9 @@
+export const placeholderUrl = `http://${window.location.host}/dash/placeholder.png`;
+
+
 export async function resolveCardholderImage(id: string): Promise<string> {
-  const fallback = '/dash/placeholder.png'
-  const primary = `http://${window.location.host}/picture/${id}`
+  const fallback = placeholderUrl
+  const primary = `http://${import.meta.env.VITE_FASTAPI_URL}/picture/${id}`
   const secondary = `http://192.168.2.17:8002/picture/employee/${id}`
 
   return await tryImage(primary)

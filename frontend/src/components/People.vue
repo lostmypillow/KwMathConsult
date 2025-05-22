@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useWebSocket } from "../composables/useWebSocket";
-import { resolveCardholderImage } from "../composables/useImage";
+import { resolveCardholderImage, placeholderUrl } from "../composables/useImage";
 const ws = useWebSocket();
 const images = ref({});
+
 onMounted(() => {
   watch(
     () => ws.receivedMessage.value,
@@ -21,7 +22,7 @@ onMounted(() => {
       }
       console.log(images.value);
     },
-    { immediate: false }
+    { immediate: true }
   );
 });
 </script>
@@ -45,7 +46,7 @@ onMounted(() => {
           class="h-[16vh] object-contain self-center"
         />
 
-        <img v-else :src="`${window.location.host}/dash/placeholder.png`" alt="" />
+        <img class="h-[16vh] object-contain self-center" v-else :src="placeholderUrl" alt="" />
       </transition>
 
       <label class="justify-self-center self-center pt-4">{{

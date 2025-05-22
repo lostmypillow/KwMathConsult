@@ -33,7 +33,8 @@ onMounted(() => (interval.value = setInterval(updateTime, 1000)));
 <template>
   <div class="flex items-center justify-between h-1/8 w-full px-2 ">
     <div class="flex flex-row gap-4 items-center justify-center">
-      <img src="/logo.webp" alt="logo" @click="router.push('/edit')" />
+      <img v-if="route.fullPath !== '/edit'" src="/logo.webp" alt="logo" @click="router.push('/edit')" />
+      <Button v-else @click="router.go(-1)">Back</Button>
       <p class="text-2xl">高偉數學輔導系统 {{ route.fullPath == '/edit' ?  '編輯資訊' : '' }}</p>
     </div>
 

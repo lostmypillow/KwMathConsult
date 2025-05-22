@@ -19,8 +19,8 @@ const getBrowserInfo = () => ({
     pixelRatio: window.devicePixelRatio
   }
 })
-// window.location.host
-const url = 'ws://' + `${window.location.host}` +`/ws/${uuidv7()}`
+// import.meta.env.VITE_FASTAPI_URL
+const url = 'ws://' + `${import.meta.env.VITE_FASTAPI_URL}` +`/ws/${uuidv7()}`
 const getTimestamp = () => new Date().toISOString()
 
 const log = (level: 'log' | 'error' | 'warn', msg: string, data?: any) => {
