@@ -7,6 +7,7 @@ import { definePreset } from "@primeuix/themes";
 import Material from '@primeuix/themes/material';
 import 'primeicons/primeicons.css'
 import 'vue-advanced-cropper/dist/style.css';
+import ToastService from 'primevue/toastservice';
 const MyPreset = definePreset(Material, {
   semantic: {
     primary: {
@@ -31,4 +32,4 @@ createApp(App).use(router).use(PrimeVue, {
       preset: MyPreset,
       options: { darkModeSelector: ".fake-dark-selector" },
     },
-  }).mount('#app')
+  }).use(ToastService).mount('#app')

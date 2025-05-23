@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useWebSocket } from "../composables/useWebSocket";
-import { resolveCardholderImage, placeholderUrl } from "../composables/useImage";
+import { resolveImage, placeholderUrl } from "../composables/useImage";
 const ws = useWebSocket();
 const images = ref({});
 
@@ -16,7 +16,7 @@ onMounted(() => {
           continue;
         }
         console.log("Resolving teacher");
-        images.value[teacher.card_id.trim()] = await resolveCardholderImage(
+        images.value[teacher.card_id.trim()] = await resolveImage(
           teacher.card_id.trim()
         );
       }

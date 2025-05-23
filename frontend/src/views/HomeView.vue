@@ -2,42 +2,43 @@
 import People from "../components/People.vue";
 import VideoPlayer from "../components/VideoPlayer.vue";
 const dummy = [
+  // {
+  //   id: 2,
+  //   content: "efwssdsefwfwfw",
+  //   author: "200024",
+  //   created_at: "2025-05-23T19:39:47.002344",
+  //   updated_at: null,
+  // },
+  // {
+  //   id: 4,
+  //   content: "212122121213 <p>meow</p>",
+  //   author: "300003",
+  //   created_at: "2025-05-23T20:02:11.848863",
+  //   updated_at: null,
+  // },
+  // {
+  //   id: 11,
+  //   content: "212122121213 <p>meow</p>",
+  //   author: "300003",
+  //   created_at: "2025-05-23T20:07:36.056527",
+  //   updated_at: null,
+  // },
+
   {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-  },
-  {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-  },
-  {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-  },
+    id: 11,
+    content: `
+   <h3 style="font-weight: revert; color: revert;">
+  This should have its original font-weight (bold) and color: black
+</h3>
+<p>Just some text</p>
+
+<p>Just some text</p>
+
+`,
+    author: "300003",
+    created_at: "2025-05-23T20:07:36.056527",
+    updated_at: null,
+  }
 ];
 </script>
 
@@ -59,13 +60,9 @@ const dummy = [
       :autoplayInterval="3000"
     >
       <template #item="slotProps">
-        <Card class="flex h-full w-fit rounded-2xl">
+        <Card class="flex h-full w-full rounded-2xl">
           <template #content>
-            <p class="m-0">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Inventore sed consequuntur error repudiandae numquam deserunt
-              quisquam repellat libero asperiores earum nam nobis, culpa ratione
-              quam perferendis esse, cupiditate neque quas!
+            <p class="no-preflight" v-html="slotProps.data.content">
             </p>
           </template>
         </Card>
@@ -83,5 +80,9 @@ const dummy = [
 
 ::v-deep(.p-card) {
   border-radius: 1rem;
+}
+
+.no-preflight, .no-preflight * {
+  all: revert;
 }
 </style>

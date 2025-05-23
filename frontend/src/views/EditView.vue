@@ -1,15 +1,18 @@
-<script setup>
-import { ref, watch, onMounted, reactive } from "vue";
-import { resolveCardholderImage } from "../composables/useImage";
+<script setup lang="ts">
+import { ref, watch, onMounted } from "vue";
+import { resolveImage } from "../composables/useImage";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 import FileUpload from "primevue/fileupload";
 import InputGroup from "primevue/inputgroup";
-import InputGroupAddon from "primevue/inputgroupaddon";
 import InputText from "primevue/inputtext";
-import { validate } from "uuid";
 import axios from "axios";
 import { placeholderUrl } from "../composables/useImage";
+import { useAPI } from "../composables/useAPI";
+import { useToast } from "primevue";
+import type { teacherData } from "../types/teacherData";
+import { defaultTeacher } from "../types/teacherData";
+const api = useAPI();
 const fileUploadRef = ref();
 const inputNum = ref("");
 const imageSrc = ref("");
@@ -17,7 +20,9 @@ const rawImage = ref(null);
 const showEditor = ref(false);
 const cropperRef = ref(null);
 const croppedCanvas = ref(null);
-
+const toast = useToast();
+const updateBtnStatus = ref("");
+const updateBtnDisabled = ref(false);
 const onSelect = ({ files }) => {
   console.log("selected");
   try {
@@ -48,51 +53,49 @@ const cropImage = () => {
 };
 
 const uploadCroppedImage = async (canvas) => {
-  const blob = await new Promise((resolve) =>
-    canvas.toBlob(resolve, "image/jpeg", 1)
-  );
-  const formData = new FormData();
-  formData.append("file", blob, "cropped.jpg");
-
-  await fetch(
-    `http://${import.meta.env.VITE_FASTAPI_URL}/picture/${inputNum.value}`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
-  fileUploadRef.value?.clear();
-  imageSrc.value = "";
-  imageSrc.value = await resolveCardholderImage(inputNum.value);
+  try {
+    await api.uploadImage(canvas, inputNum.value);
+    fileUploadRef.value?.clear();
+    imageSrc.value = "";
+    imageSrc.value = await resolveImage(inputNum.value);
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: "Image upload successful!",
+      life: 3000,
+    });
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Image upload unsuccessful!",
+      life: 3000,
+    });
+  }
 };
-const college = ref("");
-const teacherData = ref({
-  姓名: "",
-  大學: "",
+const teacherData = ref<teacherData>({
+  ...defaultTeacher,
 });
-const updateBtnStatus = ref("");
-const updateBtnText = ref("更新");
-const updateBtnDisabled = ref(false);
+
 const updateCollege = async () => {
   updateBtnDisabled.value = true;
   try {
-    const x = teacherData.value;
-
-    await axios.post(`http://${import.meta.env.VITE_FASTAPI_URL}/update`, x);
-    updateBtnStatus.value = "success";
-    updateBtnText.value = "更新成功!";
-    setTimeout(() => {
-      updateBtnStatus.value = "";
-      updateBtnText.value = "更新";
-    }, 3000);
+    await api.updateCollege(teacherData.value);
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: "College update successful!",
+      life: 3000,
+    });
   } catch (error) {
     console.error(error);
-    updateBtnStatus.value = "success";
-    updateBtnText.value = "更新失敗!";
-    setTimeout(() => {
-      updateBtnStatus.value = "danger";
-      updateBtnText.value = "更新";
-    }, 3000);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "College update unsuccessful!",
+      life: 3000,
+    });
   }
   updateBtnDisabled.value = false;
 };
@@ -105,19 +108,13 @@ onMounted(() => {
         teacherData.value = { 姓名: "", 大學: "" };
         return;
       }
-      imageSrc.value = await resolveCardholderImage(cardId);
-      teacherData.value = await (
-        await fetch(
-          `http://${import.meta.env.VITE_FASTAPI_URL}/0/${inputNum.value}`,
-          {
-            method: "GET",
-          }
-        )
-      ).json();
+      imageSrc.value = await resolveImage(cardId);
+      teacherData.value = await api.getTeacherInfo(inputNum.value);
     },
     { immediate: true }
   );
 });
+const announcementText = ref("");
 </script>
 
 <template>
@@ -169,6 +166,7 @@ onMounted(() => {
           class="w-full"
           v-model="inputNum"
           placeholder="輸入員工編號"
+          autoFocus
         />
         <div v-else class="flex flex-row gap-2 w-full items-center px-2">
           <p class="flex flex-grow">
@@ -187,9 +185,6 @@ onMounted(() => {
           customUpload
           @select="onSelect"
           chooseLabel="選擇圖片"
-          :pt="{
-            filename: { style: 'display: none' },
-          }"
         />
       </div>
 
@@ -201,10 +196,12 @@ onMounted(() => {
 
         <Button
           class="shrink-0"
+          icon="pi pi-sync"
+          size="small"
           @click="updateCollege"
           :severity="updateBtnStatus"
           :disabled="inputNum.length < 6"
-          :label="updateBtnText"
+          label="更新"
         ></Button
       ></InputGroup>
     </div>
@@ -219,10 +216,27 @@ onMounted(() => {
         <template #center>
           <Button disabled icon="pi pi-eye" label="預覽"
         /></template>
-        <template #end> <Button disabled severity="success" icon="pi pi-save" label="存檔" /></template>
+        <template #end>
+          <Button disabled severity="success" icon="pi pi-save" label="存檔"
+        /></template>
       </Toolbar>
-      
-      <Editor v-model="value" class="flex-1 w-full" />
+      <Button @click="console.log(announcementText)"></Button>
+      <Editor v-model="announcementText" class="flex-1 w-full">
+        <template #toolbar>
+          <span class="ql-formats">
+            <select class="ql-header">
+              <option selected></option>
+              <option value="1"></option>
+              <option value="2"></option>
+              <option value="3"></option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+          </span>
+        </template>
+      </Editor>
     </div>
   </div>
 </template>
